@@ -2,22 +2,25 @@ package br.com.alura.orgs.ui.activity
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
+import android.view.Menu
+import android.view.MenuItem
 import androidx.lifecycle.lifecycleScope
+import br.com.alura.orgs.R
 import br.com.alura.orgs.database.AppDatabase
 import br.com.alura.orgs.databinding.ActivityListaProdutosActivityBinding
 import br.com.alura.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.launch
 
 
-class ListaProdutosActivity : AppCompatActivity() {
+class ListaProdutosActivity : UsuarioBaseActivity() {
 
     private val adapter = ListaProdutosAdapter(context = this)
     private val binding by lazy {
         ActivityListaProdutosActivityBinding.inflate(layoutInflater)
     }
-    private val dao by lazy {
+    private val produtoDao by lazy {
         val db = AppDatabase.instancia(this)
         db.produtoDao()
     }
@@ -28,9 +31,34 @@ class ListaProdutosActivity : AppCompatActivity() {
         configuraRecyclerView()
         configuraFab()
         lifecycleScope.launch {
-            dao.buscaTodos().collect { produtos ->
-                adapter.atualiza(produtos)
+            usuario
+                .filterNotNull()
+                .collect { usuario ->
+                    buscaProdutosUsuario(usuario.id)
+                }
+        }
+    }
+
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_lista_produtos, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when(item.itemId){
+            R.id.menu_lista_produtos_sair_do_app -> {
+                deslogaUsuario()
             }
+        }
+
+        return super.onOptionsItemSelected(item)
+    }
+
+    private suspend fun buscaProdutosUsuario(usuarioId: String) {
+        produtoDao.buscaTodosDoUsuario(usuarioId).collect { produtos ->
+            adapter.atualiza(produtos)
         }
     }
 
