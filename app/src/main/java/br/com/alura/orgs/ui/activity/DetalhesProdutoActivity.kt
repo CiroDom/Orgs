@@ -9,6 +9,7 @@ import android.view.MenuItem
 import androidx.lifecycle.lifecycleScope
 import br.com.alura.orgs.R
 import br.com.alura.orgs.database.AppDatabase
+import br.com.alura.orgs.database.repository.ProdutoRepository
 import br.com.alura.orgs.databinding.ActivityDetalhesProdutoBinding
 import br.com.alura.orgs.extensions.formataParaMoedaBrasileira
 import br.com.alura.orgs.extensions.tentaCarregarImagem
@@ -40,7 +41,7 @@ class DetalhesProdutoActivity : AppCompatActivity() {
 
     private fun buscaProduto() {
         lifecycleScope.launch {
-            produtoDao.buscaPorId(produtoId).collect { produtoEncontrado ->
+            ProdutoRepository(produtoDao).buscaPorId(produtoId).collect { produtoEncontrado ->
                 produto = produtoEncontrado
                 produto?.let {
                     preencheCampos(it)
@@ -59,7 +60,7 @@ class DetalhesProdutoActivity : AppCompatActivity() {
             R.id.menu_detalhes_produto_remover -> {
                 produto?.let {
                     lifecycleScope.launch {
-                        produtoDao.remove(it)
+                        ProdutoRepository(produtoDao).remove(it)
                         finish()
                     }
                 }

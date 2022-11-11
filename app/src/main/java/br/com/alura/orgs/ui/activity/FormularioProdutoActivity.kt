@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import br.com.alura.orgs.database.AppDatabase
 import br.com.alura.orgs.database.dao.ProdutoDao
+import br.com.alura.orgs.database.repository.ProdutoRepository
 import br.com.alura.orgs.databinding.ActivityFormularioProdutoBinding
 import br.com.alura.orgs.extensions.tentaCarregarImagem
 import br.com.alura.orgs.model.Produto
@@ -62,7 +63,7 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
 
     private fun tentaBuscarProduto() {
         lifecycleScope.launch {
-            produtoDao.buscaPorId(produtoId).collect {
+            ProdutoRepository(produtoDao).buscaPorId(produtoId).collect {
                 it?.let { produtoEncontrado ->
                     title = "Alterar produto"
                     preencheCampos(produtoEncontrado)
@@ -90,7 +91,7 @@ class FormularioProdutoActivity : UsuarioBaseActivity() {
             lifecycleScope.launch {
                 usuario.value?.let{ usuario ->
                     val produtoNovo = criaProduto(usuario.id)
-                    produtoDao.salva(produtoNovo)
+                    ProdutoRepository(produtoDao).salva(produtoNovo)
                     finish()
                 }
             }

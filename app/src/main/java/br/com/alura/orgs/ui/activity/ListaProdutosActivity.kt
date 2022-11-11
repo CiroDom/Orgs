@@ -7,6 +7,7 @@ import android.view.MenuItem
 import androidx.lifecycle.lifecycleScope
 import br.com.alura.orgs.R
 import br.com.alura.orgs.database.AppDatabase
+import br.com.alura.orgs.database.repository.ProdutoRepository
 import br.com.alura.orgs.databinding.ActivityListaProdutosActivityBinding
 import br.com.alura.orgs.ui.recyclerview.adapter.ListaProdutosAdapter
 import kotlinx.coroutines.flow.collect
@@ -57,7 +58,7 @@ class ListaProdutosActivity : UsuarioBaseActivity() {
     }
 
     private suspend fun buscaProdutosUsuario(usuarioId: String) {
-        produtoDao.buscaTodosDoUsuario(usuarioId).collect { produtos ->
+        ProdutoRepository(produtoDao).buscaTodosDoUsuario(usuarioId).collect { produtos ->
             adapter.atualiza(produtos)
         }
     }
