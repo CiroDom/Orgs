@@ -5,13 +5,15 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry
 import br.com.alura.orgs.database.AppDatabase
 import br.com.alura.orgs.ui.activity.ListaProdutosActivity
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
-class ProdutoActivityTests {
+class TestesTelasDosProdutos {
 
     /** PREPARAÇÃO DO AMBIENTE */
 
@@ -24,6 +26,9 @@ class ProdutoActivityTests {
 
     /** FUNÇÕES TESTE */
 
+    @get: Rule
+    val rule = ActivityScenarioRule(ListaProdutosActivity::class.java)
+
     @Test
     fun deveMostrarElementosDoApp(
         idDaViewDoNome: Int = R.id.activity_formulario_produto_nome,
@@ -31,8 +36,6 @@ class ProdutoActivityTests {
         idDaViewDoValor: Int = R.id.activity_formulario_produto_valor,
         idDaViewDoBotaoSalvar: Int = R.id.activity_formulario_produto_botao_salvar
     ){
-        lancaListaProdActivity()
-
         confereSeOElementoApareceCorretamentePeloNome("Orgs")
 
         checaSeOElementoAparecePelaID(idDaViewDoNome)
@@ -50,8 +53,6 @@ class ProdutoActivityTests {
         desc: String = "Banana prata madura",
         valor: String = "5.99"
     ){
-        lancaListaProdActivity()
-
         clicaNoFAB()
 
         preencheOsCampos(nome, desc, valor)
@@ -73,7 +74,6 @@ class ProdutoActivityTests {
         novoValor: String = "3.99",
         idDaViewDoNome: Int = R.id.activity_formulario_produto_nome
     ){
-        lancaListaProdActivity()
 
         clicaNoFAB()
 
@@ -93,10 +93,6 @@ class ProdutoActivityTests {
     }
 
     /** FUNÇÕES AUXILIARES */
-
-    private fun lancaListaProdActivity() {
-        ActivityScenario.launch(ListaProdutosActivity::class.java)
-    }
 
     private fun checaSeOElementoAparecePelaID(idDaViewDoNome: Int) {
         Espresso
